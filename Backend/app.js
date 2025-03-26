@@ -10,7 +10,11 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 const app = express();
 
 // Middleware
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174" , "http://localhost:3000"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+];
 
 app.use(
   cors({
@@ -25,7 +29,9 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
-
+app.use("/", (req, res) => {
+  res.send("Server is running");
+});
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", docRoutes);
 app.use("/api/bookings", bookingRoutes);
