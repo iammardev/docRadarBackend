@@ -36,7 +36,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
 
-app.use("/", (req, res) => {
+app.get("/checkserver", (req, res) => {
   res.send("Server is running");
 });
 
