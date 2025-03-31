@@ -29,12 +29,16 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
-app.use("/", (req, res) => {
-  res.send("Server is running");
-});
+
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", docRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
+
+app.use("/", (req, res) => {
+  res.send("Server is running");
+});
+
+
 export default app;
