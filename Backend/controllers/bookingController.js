@@ -513,16 +513,16 @@ export const getBookingById = async (req, res) => {
   try {
     const { bookingId } = req.params;
     const booking = await Booking.findById(bookingId)
-      .populate('doctorId', 'name specialty currentHospital')
-      .populate('userId', 'name email');
+      .populate('doctor', 'name specialty currentHospital')
+      .populate('user', 'name email');
 
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
     // Check if the requesting user is authorized to view this booking
-    if (booking.userId._id.toString() !== req.user._id.toString() && 
-        booking.doctorId._id.toString() !== req.user._id.toString()) {
+    if (booking.user._id.toString() !== req.user._id.toString() && 
+        booking.doctor._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to view this booking' });
     }
 
