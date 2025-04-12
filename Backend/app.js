@@ -14,8 +14,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:3000",
-  "http://localhost:52710",
-  "http://localhost:61971",
+  "http://localhost:50384",
+  "http://localhost:64082",
 ];
 
 app.use(
