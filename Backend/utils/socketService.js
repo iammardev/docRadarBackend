@@ -495,7 +495,7 @@ async function findEmergencyDoctors(longitude, latitude, maxDistance) {
       isApproved: true
     };
 
-    const doctors = await Doctor.find(query).select("name specialty currentHospital location phone");
+    const doctors = await Doctor.find(query).select("name specialty currentHospital location number");
 
     // Calculate and add distance to each doctor
     return doctors.map((doctor) => {
