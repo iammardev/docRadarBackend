@@ -255,6 +255,14 @@ export const initializeSocket = (server) => {
         const userId = socket.userId;
         const requestId = generateRequestId();
 
+        const userDetails = await User.findById(userId).select("name number");
+        if (!userDetails) {
+          io.to(socket.id).emit("emergency_search_error", {
+            message: "User details not found",
+          });
+          return;
+        }
+
         // Find nearby doctors with emergency availability
         const nearbyDoctors = await findEmergencyDoctors(
           location.coordinates[0], // longitude
@@ -287,6 +295,8 @@ export const initializeSocket = (server) => {
               userId,
               location,
               userDistance: doctor.distance,
+               userName: userDetails.name,
+              userNumber: userDetails.number,
             });
           }
         });
