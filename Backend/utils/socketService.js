@@ -300,7 +300,7 @@ export const initializeSocket = (server) => {
             specialty: doctor.specialty,
             hospital: doctor.currentHospital,
             address: doctor.address,
-            phone: doctor.phone,
+            phone: doctor.number,
             distance: doctor.distance
           })),
           message: `Found ${nearbyDoctors.length} emergency doctors nearby`,
@@ -343,7 +343,7 @@ export const initializeSocket = (server) => {
               specialty: doctorDetails.specialty,
               hospital: doctorDetails.currentHospital,
               address: doctorDetails.address,
-              phone: doctorDetails.phone
+              phone: doctorDetails.number
             },
           });
         }
