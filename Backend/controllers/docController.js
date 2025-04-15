@@ -537,3 +537,21 @@ export const checkApprovalStatus = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Get doctor emergency status controller
+export const getEmergencyStatus = async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.user._id);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.json({
+      emergencyAvailability: doctor.emergencyAvailability
+    });
+  } catch (error) {
+    console.error("Get emergency status error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
