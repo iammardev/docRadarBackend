@@ -45,6 +45,8 @@ router.post(
   toggleEmergencyAvailability
 );
 
+router.get("/emergency-status", protect, doctorOnly, getEmergencyStatus);
+
 // Schedule management
 router.put("/schedule", protect, doctorOnly, updateSchedule);
 
