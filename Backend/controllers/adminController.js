@@ -232,7 +232,7 @@ export const approveDoctor = async (req, res) => {
       stripePayload.toString(),
       {
         headers: {
-          Authorization: `Bearer ${process.env.stripekey}`,
+          Authorization: `Bearer ${process.env.stripeKey}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }
