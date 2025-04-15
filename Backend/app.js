@@ -14,7 +14,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:3000",
-  "http://localhost:49631",
+  "http://localhost:60113",
   "http://localhost:49212",
   "http://localhost:55477",
   "http://localhost:57781",
