@@ -11,7 +11,8 @@ import {
   resetPassword,
   changePassword,
   toggleEmergencyAvailability,
-  checkApprovalStatus
+  checkApprovalStatus,
+  getEmergencyStatus
 } from "../controllers/docController.js";
 import {
   protect,
