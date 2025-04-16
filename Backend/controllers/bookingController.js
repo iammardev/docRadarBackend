@@ -289,11 +289,18 @@ export const createBookingRequest = async (req, res) => {
     }
 
     // Check if this slot is already booked
+ //   const existingBooking = await Booking.findOne({
+  //    doctor: doctorId,
+   //   appointmentDate: new Date(appointmentDate),
+   //   slotStart
+  //  });
+
     const existingBooking = await Booking.findOne({
-      doctor: doctorId,
-      appointmentDate: new Date(appointmentDate),
-      slotStart
-    });
+  doctor: doctorId,
+  appointmentDate: new Date(appointmentDate),
+  slotStart,
+  status: { $nin: [ "cancelled", "completed"] } // Exclude these
+});
 
     if (existingBooking) {
       return res.status(400).json({ message: "This slot has already been booked" });
