@@ -16,7 +16,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:60113",
   "http://localhost:49212",
-  "http://localhost:55477",
+  "http://localhost:54222",
   "http://localhost:57781",
   "https://doc-radar.vercel.app",
 ];
