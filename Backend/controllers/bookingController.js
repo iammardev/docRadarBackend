@@ -171,13 +171,22 @@ export const getAvailableSlots = async (req, res) => {
     }
     
     // Find all existing bookings for this doctor on this date
+  //  const bookings = await Booking.find({
+  //    doctor: doctorId,
+  //    appointmentDate: {
+   //     $gte: selectedDate,
+   //     $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000) // Next day
+   //   }
+  //  }).select('slotStart slotEnd');
+
     const bookings = await Booking.find({
-      doctor: doctorId,
-      appointmentDate: {
-        $gte: selectedDate,
-        $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000) // Next day
-      }
-    }).select('slotStart slotEnd');
+  doctor: doctorId,
+  appointmentDate: {
+    $gte: selectedDate,
+    $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000) // Next day
+  },
+  status: { $nin: ["cancelled"] } // Add this line to exclude cancelled bookings
+}).select('slotStart slotEnd');
     
     // Mark slots as booked
     const bookedSlots = bookings.map(booking => booking.slotStart);
