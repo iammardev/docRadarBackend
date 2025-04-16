@@ -269,11 +269,7 @@ export const createBookingRequest = async (req, res) => {
       appointmentDate,
       slotStart,
       slotEnd,
-      symptoms,
-      notes,
-      emergencyRequest,
-      longitude,
-      latitude,
+     
     } = req.body;
     const userId = req.user._id;
 
