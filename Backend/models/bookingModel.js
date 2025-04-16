@@ -33,29 +33,7 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "rejected", "completed", "cancelled"],
       default: "pending",
     },
-    emergencyRequest: {
-      type: Boolean,
-      default: false,
-    },
-    symptoms: {
-      type: String,
-      required: false,
-    },
-    notes: {
-      type: String,
-      required: false,
-    },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-        required: false,
-      },
-    },
+    
     fee: {
       type: Number,
       required: false,
