@@ -185,7 +185,7 @@ export const getAvailableSlots = async (req, res) => {
     $gte: selectedDate,
     $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000) // Next day
   },
-  status: { $nin: ["cancelled"] } // Add this line to exclude cancelled bookings
+  status: { $nin: ["cancelled", "completed"] } // Add this line to exclude cancelled and completed bookings
 }).select('slotStart slotEnd');
     
     // Mark slots as booked
