@@ -309,13 +309,7 @@ export const createBookingRequest = async (req, res) => {
       appointmentDate: new Date(appointmentDate),
       slotStart,
       slotEnd,
-      symptoms,
-      notes,
-      emergencyRequest: emergencyRequest || false,
-      location: {
-        type: "Point",
-        coordinates: [longitude, latitude],
-      },
+      
       status: "pending",
       fee: doctor.schedule?.consultationFee || 0
     });
