@@ -78,8 +78,17 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Compound index to ensure a doctor can't have multiple bookings for the same slot
-bookingSchema.index({ doctor: 1, appointmentDate: 1, slotStart: 1 }, { unique: true });
+// Modified index to only enforce uniqueness for non-cancelled and non-completed bookings
+bookingSchema.index(
+  { doctor: 1, appointmentDate: 1, slotStart: 1 },
+  { 
+    unique: true,
+    partialFilterExpression: { status: { $nin: ['cancelled', 'completed'] } }
+  }
+);
+
+// Index for geospatial queries if needed
+bookingSchema.index({ location: "2dsphere" });
 
 const Booking = mongoose.model("Booking", bookingSchema);
 
