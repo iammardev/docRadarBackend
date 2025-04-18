@@ -8,11 +8,11 @@ import geocodeAddress from "../utils/geocodeService.js";
 // Generate tokens
 const generateTokens = (doctorId) => {
   const accessToken = jwt.sign({ doctorId }, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "30d",
   });
 
   const refreshToken = jwt.sign({ doctorId }, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "30d",
   });
 
   return { accessToken, refreshToken };
