@@ -8,11 +8,11 @@ import Doctor from "../models/doctorModel.js";
 // Generate tokens
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ userId }, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "30d",
   });
 
   const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "30d",
   });
 
   return { accessToken, refreshToken };
