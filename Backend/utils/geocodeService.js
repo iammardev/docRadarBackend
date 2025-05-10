@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 
 // Replace with your actual GoMaps.pro API key
-const API_KEY = "AlzaSylip5fYR44gPysRs3u4Qlh2HRK77QE9G0U";
+const API_KEY = "AlzaSycr4TzbJpjm-lFND2vauy1PyFh8TRiClZm";
 
 /**
  * Geocodes an address to get latitude and longitude coordinates
