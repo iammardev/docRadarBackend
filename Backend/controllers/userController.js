@@ -153,10 +153,12 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Check if user exists
+    // Check if user exists (either as a user or a doctor)
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const doctor = await Doctor.findOne({ email });
+    
+    if (!user && !doctor) {
+      return res.status(404).json({ message: "Account not found" });
     }
 
     // Generate OTP
@@ -199,7 +201,7 @@ export const verifyOTP = async (req, res) => {
 
     // Verify OTP
     if (otpRecord.otp !== otp) {
-      // Delete invalid OTP after 3 failed attempts (you could add attempts counter)
+      // Delete invalid OTP after failed attempt
       await OTP.deleteOne({ _id: otpRecord._id });
       return res.status(400).json({ message: "Invalid OTP" });
     }
@@ -227,26 +229,34 @@ export const resetPassword = async (req, res) => {
   try {
     const { resetToken, newPassword } = req.body;
     
-
     // Verify reset token
     const decoded = jwt.verify(resetToken, process.env.JWT_ACCESS_SECRET);
     const email = decoded.email;
 
-    // Find user
+    // Find user or doctor
     const user = await User.findOne({ email });
-    if (!user) {
+    const doctor = await Doctor.findOne({ email });
+    
+    if (!user && !doctor) {
       // Clean up any remaining OTPs
       await OTP.deleteMany({ email });
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Account not found" });
     }
 
     // Hash new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // Update password
-    user.password = hashedPassword;
-    await user.save();
+    // Update password for whichever account type exists
+    if (user) {
+      user.password = hashedPassword;
+      await user.save();
+    }
+    
+    if (doctor) {
+      doctor.password = hashedPassword;
+      await doctor.save();
+    }
 
     // Clean up any remaining OTPs for this email
     await OTP.deleteMany({ email });
@@ -262,6 +272,7 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // Get user profile
 export const getUserProfile = async (req, res) => {
