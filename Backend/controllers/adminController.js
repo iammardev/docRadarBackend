@@ -4,6 +4,7 @@ import Doctor from "../models/doctorModel.js";
 import Booking from "../models/bookingModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendApprovalConfirmationEmail } from "../utils/emailServices.js";
 
 import axios from "axios";
 import dotenv from "dotenv";
@@ -170,13 +171,22 @@ export const getAllBookings = async (req, res) => {
 
 // Approve a doctor
 export const approveDoctor = async (req, res) => {
+  console.log('Starting doctor approval process...');
   try {
     const { doctorId } = req.params;
+    console.log('Approving doctor with ID:', doctorId);
 
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
+      console.log('Doctor not found with ID:', doctorId);
       return res.status(404).json({ message: "Doctor not found" });
     }
+
+    console.log('Found doctor:', {
+      id: doctor._id,
+      name: doctor.name,
+      email: doctor.email
+    });
 
     const parseName = (fullName) => {
       const nameParts = fullName.trim().split(" ");
@@ -197,8 +207,21 @@ export const approveDoctor = async (req, res) => {
     // Approve the doctor
     doctor.isApproved = true;
     await doctor.save();
+    console.log('Doctor approved in database');
 
-    
+    // Send approval confirmation email
+    try {
+      console.log('Preparing to send approval email to:', doctor.email);
+      const emailSent = await sendApprovalConfirmationEmail(doctor.email, doctor.name);
+      if (!emailSent) {
+        console.error('Failed to send approval email to:', doctor.email);
+      } else {
+        console.log('Approval email sent successfully to:', doctor.email);
+      }
+    } catch (emailError) {
+      console.error('Error in email sending process:', emailError);
+      // Continue with the process even if email fails
+    }
 
     // Stripe request payload
     const stripePayload = new URLSearchParams();

@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import OTP from "../models/otpModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import sendOTPEmail from "../utils/emailServices.js";
+import {sendOTPEmail, sendWelcomeEmail , sendApprovalConfirmationEmail} from "../utils/emailServices.js";
 import Doctor from "../models/doctorModel.js";
 
 // Generate tokens
@@ -48,6 +48,9 @@ export const signUp = async (req, res) => {
     });
 
     if (user) {
+      // Send welcome email
+      await sendWelcomeEmail(email, name);
+
       const { accessToken, refreshToken } = generateTokens(user._id);
 
       // Set refresh token in cookie

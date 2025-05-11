@@ -2,7 +2,7 @@ import Doctor from "../models/doctorModel.js";
 import OTP from "../models/otpModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import sendOTPEmail from "../utils/emailServices.js";
+import {sendOTPEmail, sendPendingApprovalEmail} from "../utils/emailServices.js";
 import geocodeAddress from "../utils/geocodeService.js";
 
 // Generate tokens
@@ -96,6 +96,9 @@ export const signUp = async (req, res) => {
     });
 
     if (doctor) {
+      // Send pending approval email
+      await sendPendingApprovalEmail(email, name);
+
       const { accessToken, refreshToken } = generateTokens(doctor._id);
 
       // Set refresh token in cookie
@@ -124,7 +127,6 @@ export const signUp = async (req, res) => {
         schedule: doctor.schedule,
         isApproved: doctor.isApproved,
         approvalMessage: "Your account has been created successfully. Please wait for admin approval before you can login.",
-        
       });
     }
   } catch (error) {
