@@ -374,26 +374,44 @@ const transferToDoctor = asyncHandler(async (req, res) => {
     throw new Error(error.message || 'Failed to transfer payment to doctor');
   }
 });
-
-/**
- * @desc    Process refund for cancelled booking
- * @route   POST /api/payments/refund-booking
- * @access  Private
- */
 const refundBookingPayment = asyncHandler(async (req, res) => {
   const { bookingId } = req.body;
   const userId = req.user._id;
 
   // Get booking information to verify details
-  const booking = await findBooking(bookingId);
+  let booking = await findBooking(bookingId);
   
   if (!booking) {
     res.status(404);
     throw new Error('Booking not found');
   }
 
+  // Populate the payment field for refund processing
+  await booking.populate('payment');
+  
+  // Verify payment exists
+  if (!booking.payment) {
+    res.status(400);
+    throw new Error('No payment information found for this booking');
+  }
+
+  // Verify payment has a paymentId
+  if (!booking.payment.paymentId) {
+    res.status(400);
+    throw new Error('No payment ID found for this booking');
+  }
+
+  // Check if payment is already refunded
+  if (booking.payment.refunded) {
+    res.status(400);
+    throw new Error('Payment has already been refunded');
+  }
+
   // Verify that the user making the refund is authorized
   if (booking.user.toString() !== userId.toString()) {
+    res.status(403);
+    throw new Error('Unauthorized to process this refund');
+  } else if (booking.doctor.toString() !== userId.toString()){
     res.status(403);
     throw new Error('Unauthorized to process this refund');
   }
@@ -436,6 +454,11 @@ const refundBookingPayment = asyncHandler(async (req, res) => {
     throw new Error(error.message || 'Failed to process refund');
   }
 });
+/**
+ * @desc    Process refund for cancelled booking
+ * @route   POST /api/payments/refund-booking
+ * @access  Private
+ */
 
 export { 
   createPaymentIntent, 
