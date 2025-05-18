@@ -408,13 +408,18 @@ const refundBookingPayment = asyncHandler(async (req, res) => {
   }
 
   // Verify that the user making the refund is authorized
-  if (booking.user.toString() !== userId.toString()) {
-    res.status(403);
-    throw new Error('Unauthorized to process this refund');
-  } else if (booking.doctor.toString() !== userId.toString()){
-    res.status(403);
-    throw new Error('Unauthorized to process this refund');
-  }
+//  if (booking.user.toString() !== userId.toString()) {
+ //   res.status(403);
+ //   throw new Error('Unauthorized to process this refund');
+ // }
+
+  if (
+  booking.user.toString() !== userId.toString() &&
+  booking.doctor.toString() !== userId.toString()
+) {
+  res.status(403);
+  throw new Error('Unauthorized to process this refund');
+}
 
   try {
     // Process the refund through Stripe
@@ -454,12 +459,6 @@ const refundBookingPayment = asyncHandler(async (req, res) => {
     throw new Error(error.message || 'Failed to process refund');
   }
 });
-/**
- * @desc    Process refund for cancelled booking
- * @route   POST /api/payments/refund-booking
- * @access  Private
- */
-
 export { 
   createPaymentIntent, 
   confirmPayment, 

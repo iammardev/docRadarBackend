@@ -426,11 +426,11 @@ export const cancelBooking = async (req, res) => {
     }
 
     // Check if the booking can be cancelled
-    if (booking.status !== "pending" && booking.status !== "accepted") {
-      return res.status(400).json({
-        message: "Cannot cancel a booking that is not pending or accepted",
-      });
-    }
+    // if (booking.status !== "pending" && booking.status !== "accepted") {
+     //  return res.status(400).json({
+    //     message: "Cannot cancel a booking that is not pending or accepted",
+    //   });
+   //  }
 
     // Update booking status
     booking.status = "cancelled";
