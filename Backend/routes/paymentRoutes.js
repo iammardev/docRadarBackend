@@ -6,7 +6,8 @@ import {
   getPaymentStatus,
   getAllPayments,
   transferToDoctor,
-  refundBookingPayment
+  refundBookingPayment,
+  getAccountTransactions
 } from "../controllers/paymentController.js";
 import {
   protect,
@@ -36,5 +37,8 @@ router.post("/transfer-to-doctor", protect, doctorOnly, transferToDoctor);
 
 // Refund booking payment route (protected)
 router.post("/refund-booking", protect, refundBookingPayment);
+
+// Get doctor's Stripe account transactions (doctor only)
+router.get("/doctor-transactions", protect, doctorOnly, getAccountTransactions);
 
 export default router; 

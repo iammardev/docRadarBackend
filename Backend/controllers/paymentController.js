@@ -459,6 +459,55 @@ const refundBookingPayment = asyncHandler(async (req, res) => {
     throw new Error(error.message || 'Failed to process refund');
   }
 });
+
+/**
+ * @desc    Get Stripe account transactions for a doctor
+ * @route   GET /api/payments/doctor-transactions
+ * @access  Private (Doctor only)
+ */
+const getAccountTransactions = asyncHandler(async (req, res) => {
+  // Get doctor ID from authenticated user
+  const doctorId = req.user._id;
+
+  // Verify user is a doctor
+  if (req.user.role !== 'doctor') {
+    res.status(403);
+    throw new Error('Only doctors can access their account transactions');
+  }
+
+  try {
+    // Get doctor's stripe account ID
+    const doctor = await req.user;
+    
+    if (!doctor.stripeAccountId) {
+      res.status(400);
+      throw new Error('No Stripe account connected for this doctor');
+    }
+
+    // Get transactions (balance transactions) from Stripe
+    const balanceTransactions = await stripeClient.balanceTransactions.list({
+      limit: 100,
+      stripeAccount: doctor.stripeAccountId
+    });
+
+    // Get payouts from Stripe
+    const payouts = await stripeClient.payouts.list({
+      limit: 50,
+      stripeAccount: doctor.stripeAccountId
+    });
+
+    res.status(200).json({
+      success: true,
+      transactions: balanceTransactions.data,
+      payouts: payouts.data
+    });
+  } catch (error) {
+    console.error('Stripe transaction fetch error:', error);
+    res.status(400);
+    throw new Error(error.message || 'Failed to fetch Stripe transactions');
+  }
+});
+
 export { 
   createPaymentIntent, 
   confirmPayment, 
@@ -466,5 +515,6 @@ export {
   getPaymentStatus, 
   getAllPayments,
   transferToDoctor,
-  refundBookingPayment 
+  refundBookingPayment,
+  getAccountTransactions 
 }; 
