@@ -467,13 +467,7 @@ const refundBookingPayment = asyncHandler(async (req, res) => {
  */
 const getAccountTransactions = asyncHandler(async (req, res) => {
   // Get doctor ID from authenticated user
-  const doctorId = req.user._id;
-
-  // Verify user is a doctor
-  if (req.user.role !== 'doctor') {
-    res.status(403);
-    throw new Error('Only doctors can access their account transactions');
-  }
+  
 
   try {
     // Get doctor's stripe account ID
