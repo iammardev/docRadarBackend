@@ -467,7 +467,7 @@ const refundBookingPayment = asyncHandler(async (req, res) => {
  */
 const getAccountTransactions = asyncHandler(async (req, res) => {
   // Get doctor ID from authenticated user
-  
+ 
 
   try {
     // Get doctor's stripe account ID
@@ -477,6 +477,11 @@ const getAccountTransactions = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error('No Stripe account connected for this doctor');
     }
+
+    // Get the account balance from Stripe
+    const balance = await stripeClient.balance.retrieve({
+      stripeAccount: doctor.stripeAccountId
+    });
 
     // Get transactions (balance transactions) from Stripe
     const balanceTransactions = await stripeClient.balanceTransactions.list({
@@ -490,8 +495,24 @@ const getAccountTransactions = asyncHandler(async (req, res) => {
       stripeAccount: doctor.stripeAccountId
     });
 
+    // Calculate total available balance across all currencies
+    const availableBalance = balance.available.reduce((total, funds) => {
+      return total + funds.amount;
+    }, 0);
+
+    // Calculate total pending balance across all currencies
+    const pendingBalance = balance.pending.reduce((total, funds) => {
+      return total + funds.amount;
+    }, 0);
+
     res.status(200).json({
       success: true,
+      balance: {
+        available: availableBalance,
+        pending: pendingBalance,
+        total: availableBalance + pendingBalance,
+        details: balance
+      },
       transactions: balanceTransactions.data,
       payouts: payouts.data
     });
