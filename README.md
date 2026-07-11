@@ -1,5 +1,4 @@
-## 📄 DocRadar — paste into `docRadarBackend`
-```markdown
+
 # DocRadar — Backend
 
 Backend for **DocRadar**, a healthcare app connecting patients with nearby
